@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07120b">
+  <title>Para ustedes 💛</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Georgia, "Times New Roman", serif;
+      background: #02060a;
+    }
+
+    body { color: white; }
+
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100svh;
+      min-height: 560px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(102, 72, 170, .25), transparent 35%),
+        radial-gradient(circle at 75% 25%, rgba(255, 191, 64, .18), transparent 25%),
+        linear-gradient(160deg, #02050c, #0b1420 48%, #04070a);
+    }
+
+    .nebula {
+      position: absolute;
+      inset: -25%;
+      background:
+        radial-gradient(ellipse at 35% 35%, rgba(77, 34, 132, .55), transparent 28%),
+        radial-gradient(ellipse at 70% 45%, rgba(241, 165, 46, .38), transparent 25%),
+        radial-gradient(ellipse at 45% 70%, rgba(20, 105, 150, .32), transparent 30%);
+      filter: blur(22px);
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift {
+      from { transform: scale(1) rotate(0deg); }
+      to { transform: scale(1.12) rotate(5deg); }
+    }
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(255,216,122,.8) 0 1px, transparent 1.5px);
+      background-size: 83px 91px, 127px 113px;
+      background-position: 7px 12px, 34px 47px;
+      opacity: .75;
+      animation: stars 7s linear infinite;
+    }
+
+    @keyframes stars {
+      to { background-position: 90px 92px, -40px -20px; }
+    }
+
+    .orbit {
+      position: absolute;
+      width: 150%;
+      height: 34%;
+      left: -25%;
+      top: 31%;
+      border: 2px solid rgba(255, 205, 91, .45);
+      border-radius: 50%;
+      transform: rotate(-17deg);
+      box-shadow: 0 0 25px rgba(255,190,70,.15);
+    }
+
+    .flowers {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .flower {
+      position: absolute;
+      font-size: clamp(28px, 7vw, 58px);
+      filter: drop-shadow(0 0 9px rgba(255,190,40,.65));
+      animation: float 4s ease-in-out infinite;
+      opacity: .95;
+    }
+
+    .f1 { left: 2%; top: 7%; animation-delay: -.3s; }
+    .f2 { left: 82%; top: 5%; animation-delay: -1.4s; }
+    .f3 { left: 5%; top: 72%; animation-delay: -2.1s; }
+    .f4 { right: 3%; top: 68%; animation-delay: -3s; }
+    .f5 { left: 18%; bottom: 3%; animation-delay: -1s; }
+    .f6 { right: 18%; bottom: 2%; animation-delay: -2.6s; }
+
+    @keyframes float {
+      50% { transform: translateY(-12px) rotate(4deg); }
+    }
+
+    .intro {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      background: rgba(1, 5, 7, .92);
+      transition: opacity 1.2s ease, visibility 1.2s ease;
+    }
+
+    .intro.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: clamp(30px, 9vw, 58px);
+      text-align: center;
+      letter-spacing: 1px;
+      text-shadow: 0 0 22px rgba(255,209,92,.35);
+    }
+
+    .start {
+      border: 1px solid rgba(255,218,111,.65);
+      color: #fff7d1;
+      background: rgba(255,193,61,.12);
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 17px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 25px rgba(255,190,70,.18);
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .start:active { transform: scale(.96); }
+
+    .content {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+
+    .card {
+      width: min(92vw, 430px);
+      max-height: 92svh;
+      padding: 15px 15px 24px;
+      border-radius: 30px;
+      background: linear-gradient(180deg, rgba(4,10,15,.15), rgba(2,7,11,.72));
+      border: 1px solid rgba(255,218,120,.25);
+      box-shadow: 0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      transform: translateY(35px) scale(.94);
+      transition: opacity 1.2s ease, transform 1.2s cubic-bezier(.2,.8,.2,1);
+      text-align: center;
+    }
+
+    .card.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .photo-wrap {
+      position: relative;
+      width: min(78vw, 350px);
+      aspect-ratio: 4 / 5;
+      margin: 0 auto;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 3px solid rgba(255,213,98,.7);
+      box-shadow:
+        0 0 0 7px rgba(255,214,93,.08),
+        0 0 45px rgba(255,192,53,.28);
+      background: #111;
+    }
+
+    .photo-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.22));
+      pointer-events: none;
+    }
+
+    .photo {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center 48%;
+    }
+
+    .message {
+      margin: 20px auto 0;
+      max-width: 390px;
+      font-size: clamp(26px, 7vw, 40px);
+      line-height: 1.12;
+      text-shadow: 0 2px 18px rgba(0,0,0,.7);
+    }
+
+    .message .main {
+      display: block;
+      font-weight: normal;
+    }
+
+    .message .highlight {
+      display: block;
+      margin-top: 8px;
+      color: #ffd45e;
+      font-style: italic;
+    }
+
+    .small {
+      margin-top: 13px;
+      font-size: 16px;
+      color: rgba(255,255,255,.82);
+      letter-spacing: .4px;
+    }
+
+    .heart {
+      display: inline-block;
+      color: #ffd45e;
+      animation: beat 1.2s ease-in-out infinite;
+    }
+
+    @keyframes beat {
+      50% { transform: scale(1.22); }
+    }
+
+    .petal {
+      position: absolute;
+      z-index: 3;
+      width: 9px;
+      height: 15px;
+      border-radius: 100% 0 100% 0;
+      background: #ffd45e;
+      opacity: .75;
+      animation: fall linear infinite;
+      box-shadow: 0 0 8px rgba(255,211,91,.5);
+    }
+
+    @keyframes fall {
+      from { transform: translate3d(0,-10vh,0) rotate(0); }
+      to { transform: translate3d(90px,110vh,0) rotate(420deg); }
+    }
+
+    @media (max-height: 680px) {
+      .photo-wrap { width: min(62vw, 270px); }
+      .message { font-size: clamp(22px, 6vw, 31px); }
+      .small { margin-top: 8px; font-size: 14px; }
+      .card { padding-bottom: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene">
+    <div class="nebula"></div>
+    <div class="stars"></div>
+    <div class="orbit"></div>
+
+    <div class="flowers" aria-hidden="true">
+      <div class="flower f1">🌻</div>
+      <div class="flower f2">🌻</div>
+      <div class="flower f3">🌻</div>
+      <div class="flower f4">🌻</div>
+      <div class="flower f5">🌻</div>
+      <div class="flower f6">🌻</div>
+    </div>
+
+    <div id="petals"></div>
+
+    <section class="intro" id="intro">
+      <div style="font-size:54px">🌻</div>
+      <h1>Una sorpresa para ti 💛</h1>
+      <button class="start" id="startBtn">Toca para iniciar ✨</button>
+    </section>
+
+    <section class="content">
+      <div class="card" id="card">
+        <div class="photo-wrap">
+          <img class="photo" src="foto.jpg" alt="Nuestra foto">
+        </div>
+
+        <div class="message">
+          <span class="main">Nuestro amor está por crecer...</span>
+          <span class="highlight">Vamos a ser papás de una maravillosa niña 💛</span>
+        </div>
+
+        <div class="small">
+          Y ya la amamos con todo nuestro corazón <span class="heart">♥</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const intro = document.getElementById("intro");
+    const card = document.getElementById("card");
+    const startBtn = document.getElementById("startBtn");
+    const petals = document.getElementById("petals");
+
+    // Crea pétalos amarillos que caen durante la animación.
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement("span");
+      p.className = "petal";
+      p.style.left = Math.random() * 100 + "%";
+      p.style.animationDuration = (5 + Math.random() * 7) + "s";
+      p.style.animationDelay = (-Math.random() * 10) + "s";
+      p.style.transform = `scale(${0.6 + Math.random() * .8})`;
+      petals.appendChild(p);
+    }
+
+    startBtn.addEventListener("click", () => {
+      intro.classList.add("hidden");
+
+      // La foto aparece suavemente después de comenzar.
+      setTimeout(() => {
+        card.classList.add("show");
+      }, 900);
+    });
+  </script>
+</body>
+</html>
